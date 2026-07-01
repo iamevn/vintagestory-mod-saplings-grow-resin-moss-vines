@@ -42,8 +42,8 @@ public static class PatchSaplingGrowth
         TreeGenProperties treeGenProps = api.Assets.Get((AssetLocation) "worldgen/treengenproperties.json").ToObject<TreeGenProperties>();
 
         ClimateCondition climateAt = api.World.BlockAccessor.GetClimateAt(saplingPos);
-        float rain = climateAt.Rainfall; // WorldGenRainfall?
-        float temp = climateAt.Temperature; // WorldGenTemperature?
+        float rain = climateAt.WorldgenRainfall * 255f;
+        float temp = climateAt.WorldGenTemperature;
         int descaledTemp = Climate.DescaleTemperature(temp);
         
         float rainVal = Math.Max(0, (rain / 255f - treeGenProps.vinesMinRain) / (1 - treeGenProps.vinesMinRain));
