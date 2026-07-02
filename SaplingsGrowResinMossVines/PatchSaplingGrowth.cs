@@ -30,7 +30,13 @@ public static class PatchSaplingGrowth
         ICoreAPI api = saplingEntity.Api;
         BlockPos saplingPos = saplingEntity.Pos;
 
-        api.Logger.Debug("Overriding TreeGenParams from [otherBlockChance={0}][hemisphere={1}][vinesGrowthChance={2}][mossGrowthChance={3}]", treeGenParams.otherBlockChance, treeGenParams.hemisphere, treeGenParams.vinesGrowthChance, treeGenParams.mossGrowthChance);
+        if (treeGenParams.otherBlockChance != 0 || treeGenParams.vinesGrowthChance != 0 ||
+            treeGenParams.mossGrowthChance != 0)
+        {
+            api.Logger.Debug("TreeGenParams already set for {0} at ({1}) [otherBlockChance={2},hemisphere={3},vinesGrowthChance={4},mossGrowthChance={5}]", saplingEntity.GetBlockName(), saplingPos,
+                treeGenParams.otherBlockChance, treeGenParams.hemisphere, treeGenParams.vinesGrowthChance, treeGenParams.mossGrowthChance);
+            return;
+        }
         
         // always allow alt blocks like resin 
         treeGenParams.otherBlockChance = 1.0f;
@@ -56,6 +62,7 @@ public static class PatchSaplingGrowth
         var mossGrowChance = 2.25 * rainValMoss - 0.5 + Math.Sqrt(tempValMoss) * 3 * Math.Max(-0.5, 0.5 - tempValMoss);
         treeGenParams.mossGrowthChance = GameMath.Clamp((float)mossGrowChance, 0, 1);
         
-        api.Logger.Debug("Set TreeGenParams to [otherBlockChance={0}][hemisphere={1}][vinesGrowthChance={2}][mossGrowthChance={3}]", treeGenParams.otherBlockChance, treeGenParams.hemisphere, treeGenParams.vinesGrowthChance, treeGenParams.mossGrowthChance);
+        api.Logger.Debug("Set TreeGenParams for {0} at ({1}) to [otherBlockChance={2},hemisphere={3},vinesGrowthChance={4},mossGrowthChance={5}]", saplingEntity.GetBlockName(), saplingPos,
+            treeGenParams.otherBlockChance, treeGenParams.hemisphere, treeGenParams.vinesGrowthChance, treeGenParams.mossGrowthChance);
     }
 }
