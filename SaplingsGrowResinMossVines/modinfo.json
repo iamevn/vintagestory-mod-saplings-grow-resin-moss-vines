@@ -7,7 +7,7 @@
         "iamevn"
     ],
     "description": "Enables resin/moss/vine blocks on trees grown from saplings like trees grown during worldgen",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "dependencies": {
         "game": "1.20.0"
     }
