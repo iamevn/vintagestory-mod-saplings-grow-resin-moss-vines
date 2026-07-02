@@ -40,20 +40,19 @@ public static class PatchSaplingGrowth
         
         // set vines and moss to grow like in worldgen (calculating like WgenTreeSupplier.GetRandomGenForClimate)
         TreeGenProperties treeGenProps = api.Assets.Get((AssetLocation) "worldgen/treengenproperties.json").ToObject<TreeGenProperties>();
+        treeGenProps.descVineMinTempRel = Climate.DescaleTemperature(treeGenProps.vinesMinTemp) / 255f;
 
         ClimateCondition climateAt = api.World.BlockAccessor.GetClimateAt(saplingPos);
         float rain = climateAt.WorldgenRainfall * 255f;
         float temp = climateAt.WorldGenTemperature;
-        int descaledTemp = Climate.DescaleTemperature(temp);
-        
+        float descaledTemp = Climate.DescaleTemperature(temp);
         float rainVal = Math.Max(0, (rain / 255f - treeGenProps.vinesMinRain) / (1 - treeGenProps.vinesMinRain));
-        float tempVal = Math.Max(0, (descaledTemp / 255f - treeGenProps.descVineMinTempRel) - (1 / treeGenProps.descVineMinTempRel));
+        float tempVal = Math.Max(0, (descaledTemp / 255f - treeGenProps.descVineMinTempRel) / (1 - treeGenProps.descVineMinTempRel));
 
         float rainValMoss = rain / 255f;
-        float tempValMoss = temp / 255f;
+        float tempValMoss = descaledTemp / 255f;
             
-        treeGenParams.vinesGrowthChance =
-            1.5f * rainVal * tempVal + 0.5f * rainVal * GameMath.Clamp((tempVal + 0.33f) / 1.33f, 0, 1);
+        treeGenParams.vinesGrowthChance = 1.5f * rainVal * tempVal + 0.5f * rainVal * GameMath.Clamp((tempVal + 0.33f) / 1.33f, 0, 1);
         var mossGrowChance = 2.25 * rainValMoss - 0.5 + Math.Sqrt(tempValMoss) * 3 * Math.Max(-0.5, 0.5 - tempValMoss);
         treeGenParams.mossGrowthChance = GameMath.Clamp((float)mossGrowChance, 0, 1);
         
