@@ -17,9 +17,10 @@ public static class PatchSaplingGrowth
         CodeMatcher codeMatcher = new CodeMatcher(instructions);
         codeMatcher.MatchStartForward(CodeMatch.StoresField(typeof(TreeGenParams).Field("mossGrowthChance")));
         codeMatcher.MatchStartForward(CodeMatch.StoresLocal("treeGenParams"));
+        int treeGenParamsIdx = codeMatcher.Instruction.LocalIndex();
         codeMatcher.InsertAfter([
             CodeInstruction.LoadArgument(0), // BlockEntitySapling instance
-            CodeInstruction.LoadLocal(5), // Local variable treeGenParams
+            CodeInstruction.LoadLocal(treeGenParamsIdx),
             new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PatchSaplingGrowth), nameof(SetTreeGenParams))),
         ]);
         return codeMatcher.Instructions();
