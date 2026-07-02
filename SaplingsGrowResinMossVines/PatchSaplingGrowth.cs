@@ -19,7 +19,7 @@ public static class PatchSaplingGrowth
         codeMatcher.MatchStartForward(CodeMatch.StoresLocal("treeGenParams"));
         int treeGenParamsIdx = codeMatcher.Instruction.LocalIndex();
         codeMatcher.InsertAfter([
-            CodeInstruction.LoadArgument(0), // BlockEntitySapling instance
+            CodeInstruction.LoadArgument(0), // BlockEntitySapling instance's this
             CodeInstruction.LoadLocal(treeGenParamsIdx),
             new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PatchSaplingGrowth), nameof(SetTreeGenParams))),
         ]);
@@ -30,14 +30,6 @@ public static class PatchSaplingGrowth
     {
         ICoreAPI api = saplingEntity.Api;
         BlockPos saplingPos = saplingEntity.Pos;
-
-        if (treeGenParams.otherBlockChance != 0 || treeGenParams.vinesGrowthChance != 0 ||
-            treeGenParams.mossGrowthChance != 0)
-        {
-            api.Logger.Debug("TreeGenParams already set for {0} at ({1}) [otherBlockChance={2},hemisphere={3},vinesGrowthChance={4},mossGrowthChance={5}]", saplingEntity.GetBlockName(), saplingPos,
-                treeGenParams.otherBlockChance, treeGenParams.hemisphere, treeGenParams.vinesGrowthChance, treeGenParams.mossGrowthChance);
-            return;
-        }
         
         // always allow alt blocks like resin 
         treeGenParams.otherBlockChance = 1.0f;
